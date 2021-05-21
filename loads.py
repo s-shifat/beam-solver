@@ -1,3 +1,4 @@
+
 class DIRECTION:
     '''Global Sign Convention'''
     UP = 1
@@ -17,7 +18,7 @@ class SINGULARITY_EXPONENT:
 class LoadBase:
     ROTATION = -1
 
-    def __init__(self, exponent_, load_magnitude=0, direction=DIRECTION.DOWN, start=0, end=0, index_tuple=None) -> None:
+    def __init__(self, exponent_, load_magnitude, direction, start, end, index_tuple=None) -> None:
         '''index_tuple -> P|M|D|V , Class.IDX'''
         self.exponent_ = exponent_
         self.absolute_load_magnitude = load_magnitude
@@ -99,8 +100,55 @@ class Moment(LoadBase):
 class Udl(LoadBase):
     EXPONENT = SINGULARITY_EXPONENT.UDL
     IDX = 0
-    SYMBOL = 'D'
+    SYMBOL = 'UDL'
+
+    def __init__(self, load_magnitude, direction, start, end) -> None:
+        super().__init__(exponent_=self.EXPONENT, load_magnitude=load_magnitude,
+                         direction=direction, start=start, end=end, index_tuple=(self.SYMBOL, self.IDX))
     
+    @property
+    def moment_arm(self):
+        return (self.pos0 + self.span/2)*self.ROTATION
+
+    @property
+    def point_load(self):
+        return self.load * self.span
+
+    def __repr__(self) -> str:
+        return super().__repr__(Udl.__name__)
+
+class Uvl(LoadBase):
+    EXPONENT = SINGULARITY_EXPONENT.UVL
+    IDX = 0
+    SYMBOL = 'UVL'
+
+    def __init__(self, peak_load_magnitude, direction, zero_position, peak_position) -> None:
+        super().__init__(exponent_=self.EXPONENT, load_magnitude=peak_load_magnitude,
+                         direction=direction, start=zero_position, end=peak_position, index_tuple=(self.SYMBOL, self.IDX))
+    
+        self.zero_position = self.s
+        self.peak_position = self.e
+        self.peak_is_far = self.peak_position > self.zero_position
+        # print('Left:', self.peak_is_far)
+        self.value = self.direction * self.absolute_load_magnitude
+
+    @property
+    def load(self):
+        m = self.value/self.span
+        # return m if self.peak_is_far else -m
+        return m
+
+    @property
+    def moment_arm(self):
+        distance = self.span*(2/3) if self.peak_is_far else self.span*(1/3)
+        return (self.pos0 + distance)*self.ROTATION
+
+    @property
+    def point_load(self):
+        return 0.5 * self.value * self.span
+
+    def __repr__(self) -> str:
+        return super().__repr__(Udl.__name__)
 
 
 
