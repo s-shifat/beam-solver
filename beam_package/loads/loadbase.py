@@ -43,5 +43,10 @@ class LoadBase:
         return self.idx_tuple[0] + str(self.idx_tuple[1])
 
     def __repr__(self, child_name) -> str:
-        return f"ID:{self.unique_id}\n{child_name}(load={self.load}, pos0={self.pos0}, pos1={self.pos1},\n\tmoment={self.moment}, moment_arm={self.moment_arm},\n\tpoint_load={self.point_load},span={self.span},\n\texponent={self.exponent_})"
+        return f"""ID:{self.unique_id} -------
+            {child_name}(load= {self.load},
+                pos0= {self.pos0}, pos1= {self.pos1},span= {self.span},
+                moment= {self.moment}, moment_arm= {self.moment_arm},
+                point_load= {self.point_load},
+                exponent= {self.exponent_})"""
 
