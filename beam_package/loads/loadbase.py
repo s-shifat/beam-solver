@@ -1,8 +1,12 @@
+from beam_package.utils.dataholder import LoadTable
+
+
 class LoadBase:
-    ROTATION = -1
+    ROTATION_ADJUSTMENT = -1
 
     def __init__(self, exponent_, load_magnitude, direction, start, end, index_tuple=None) -> None:
-        '''index_tuple -> P|M|D|V , Class.IDX'''
+        """index_tuple -> P|M|D|V , Class.IDX"""
+        self.df = LoadTable()
         self.exponent_ = exponent_
         self.absolute_load_magnitude = load_magnitude
         self.s = start
@@ -32,7 +36,7 @@ class LoadBase:
 
     @property
     def moment_arm(self):
-        return self.pos0 * self.ROTATION
+        return self.pos0 * self.ROTATION_ADJUSTMENT
 
     @property
     def moment(self):
@@ -40,13 +44,25 @@ class LoadBase:
 
     @property
     def unique_id(self):
-        return self.idx_tuple[0] + str(self.idx_tuple[1])
+        if self.idx_tuple:
+            return self.idx_tuple[0] + str(self.idx_tuple[1])
+        return
 
-    def __repr__(self, child_name) -> str:
-        return f"""ID:{self.unique_id} -------
-            {child_name}(load= {self.load},
-                pos0= {self.pos0}, pos1= {self.pos1},span= {self.span},
-                moment= {self.moment}, moment_arm= {self.moment_arm},
-                point_load= {self.point_load},
-                exponent= {self.exponent_})"""
+    @property
+    def load_table(self):
+        if len(self.df) == 0:
+            self.df = self.df.append(LoadTable(data=[[
+                self.unique_id,
+                self.exponent_,
+                self.load,
+                self.pos0,
+                self.pos1,
+                self.span,
+                self.point_load,
+                self.moment_arm,
+                self.moment
+            ]]))
+        return self.df
 
+    def __repr__(self):
+        return self.load_table.__repr__()

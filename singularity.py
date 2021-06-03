@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 def singular_unit(x, a, n):
     '''
         format: <x-a>^n
-        logic: by defination http://www.eng.uwaterloo.ca/~syde06/singularity-functions.pdf#page=1
+        logic: by definition http://www.eng.uwaterloo.ca/~syde06/singularity-functions.pdf#page=1
     '''
     if n < 0:
         if x != a:
@@ -16,12 +16,12 @@ def singular_unit(x, a, n):
         if x < a:
             return 0
         elif x >= a:
-            return (x - a)**n  # possibility of 0**0
+            return (x - a) ** n  # possibility of 0**0
 
 
 def singular_x(arr, a, n):
     ''' 
-        bradcasting singular_unit to array ie, linspace x
+        broadcasting singular_unit to array ie, linspace x
     '''
     return np.array(list(map(lambda x: singular_unit(x, a, n), arr)))
 
@@ -36,7 +36,7 @@ def integrate(arr, a, n):
     elif n == -1:
         return singular_x(arr, a, 0)
     elif n >= 0:
-        return singular_x(arr, a, n+1)/(n+1)
+        return singular_x(arr, a, n + 1) / (n + 1)
 
 
 def s(arr, a, n, depth=0):
@@ -48,7 +48,7 @@ def s(arr, a, n, depth=0):
         return singular_x(arr, a, n)
     if depth == 1:
         return integrate(arr, a, n)
-    return s(arr, a, n+1, depth-1)
+    return s(arr, a, n + 1, depth - 1)
 
 
 def singularity_order(order=0):
@@ -91,8 +91,7 @@ bmd.spines['left'].set_position('zero')
 bmd.spines['right'].set_color('none')
 bmd.spines['top'].set_color('none')
 
-
-x = np.linspace(0, 50, 50*1000)
+x = np.linspace(0, 50, 50 * 1000)
 loads = np.array([
     125,
     20,
