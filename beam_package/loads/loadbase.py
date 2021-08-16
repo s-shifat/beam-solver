@@ -1,10 +1,11 @@
 from beam_package.utils.dataholder import LoadTable
+from beam_package.utils.sign_convention import DIRECTION
 
 
 class LoadBase:
     ROTATION_ADJUSTMENT = -1
 
-    def __init__(self, exponent_, load_magnitude, direction, start, end, index_tuple=None) -> None:
+    def __init__(self, exponent_, load_magnitude=0, direction=DIRECTION.UP, start=0, end=0, index_tuple=None) -> None:
         """index_tuple -> P|M|D|V , Class.IDX"""
         self.df = LoadTable()
         self.exponent_ = exponent_

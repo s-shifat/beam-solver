@@ -30,37 +30,35 @@ b.add_load(Uvl(20, DIRECTION.DOWN, 10, 15))
 b.add_load(Moment(400, DIRECTION.ACW, 16.5))
 print(b.load_table)
 print('\n'*4)
+b.calc_reaction(upadate=True)
+print(b.load_table)
+# print(b._update_reactions())
 # print(b.load_table['point_load'].sum())k
 
-table = (b.load_table.iloc[:,1:]).copy()
-knowns = table.dropna()
-unkowns = table[table['load'].isna()]
-print(knowns, '\n'*2, unkowns)
-
-# inv_matrix = np.linalg.inv(np.array([
-#     [1,1],
-#     np.array(unkowns['pos0'])
-# ]))
-# inv_matrix = np.array([[1,1], np.array(unkowns['moment_arm'])])
-
-sum_matrix = np.array([
-    [knowns[knowns['exponent'] != -2]['point_load'].sum()],
-    [knowns['moment'].sum()]
-], dtype=np.float64)
+# table = (b.load_table.iloc[:,1:]).copy()
+# knowns = table.dropna()
+# unkowns = table[table['load'].isna()]
+# print(knowns, '\n'*2, unkowns)
 
 
-inv_matrix = np.array(
-    [[1,1],
-    unkowns['moment_arm']],
-    dtype=np.float64)
-print(inv_matrix)
+# sum_matrix = np.array([
+#     [knowns[knowns['exponent'] != -2]['point_load'].sum()],
+#     [knowns['moment'].sum()]
+# ], dtype=np.float64)
 
-print('\n'*2, inv_matrix, '\n' ,sum_matrix)
-inv_matrix = np.linalg.inv(inv_matrix)
-solution = np.dot(inv_matrix, sum_matrix)
-adjustment = np.array([[-1],[-1]])
-solution = adjustment*solution
-print('Solution:', solution)
+
+# inv_matrix = np.array(
+#     [[1,1],
+#     unkowns['moment_arm']],
+#     dtype=np.float64)
+# print(inv_matrix)
+
+# print('\n'*2, inv_matrix, '\n' ,sum_matrix)
+# inv_matrix = np.linalg.inv(inv_matrix)
+# solution = np.dot(inv_matrix, sum_matrix)
+# adjustment = np.array([[-1],[-1]])
+# solution = adjustment*solution
+# print('Solution:', solution)
 
 
 

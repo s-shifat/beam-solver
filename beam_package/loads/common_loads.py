@@ -1,3 +1,5 @@
+from os import startfile
+from numpy.lib.function_base import select
 from beam_package.loads.loadbase import LoadBase
 from beam_package.utils.sign_convention import DIRECTION
 from beam_package.singularity.exponents import SINGULARITY_EXPONENT
@@ -45,6 +47,15 @@ class Udl(LoadBase):
     def __init__(self, load_magnitude, direction, start, end) -> None:
         super().__init__(exponent_=self.EXPONENT, load_magnitude=load_magnitude,
                          direction=direction, start=start, end=end, index_tuple=(self.SYMBOL, self.IDX))
+        self.s = start
+        self.e = end
+    @property
+    def pos0(self):
+        return min(self.s, self.e)
+
+    @property
+    def pos1(self):
+        return max(self.s, self.e)
 
     @property
     def moment_arm(self):
