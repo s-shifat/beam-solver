@@ -1,66 +1,26 @@
-from os import pardir
-from numpy.linalg import inv
-from pandas.core.accessor import DirNamesMixin
 from beam_package.loads.common_loads import *
 from beam_package.utils.sign_convention import DIRECTION
 from beam_package.beam.beam import Beam
-import numpy as np
+import json
 
 
-class P:
-    def __init__(self, **kwargs) -> None:
-        self.name = kwargs['name']
-        self.age = kwargs['age']
+# b = Beam(length=20)
+# b.add_support(0, 'pin')
+# b.add_support(20, 'roller')
 
+# b.add_load(PointLoad(50, DIRECTION.DOWN, 5))
+# b.add_load(Udl(10, DIRECTION.DOWN, 0, 10))
+# b.add_load(Uvl(20, DIRECTION.DOWN, 10, 15))
+# b.add_load(Moment(400, DIRECTION.ACW, 16.5))
+# print(b.load_table)
+# print('\n'*4)
+# b.calc_reaction(upadate=True)
+# print(b.load_table)
 
-params = {
-    'load_magnitude': 200,
-    'direction': DIRECTION.UP,
-    'start': 10,
-    'end': 30
-}
-
-b = Beam(length=20)
-b.add_support(0, 'pin')
-b.add_support(20, 'roller')
-
-b.add_load(PointLoad(50, DIRECTION.DOWN, 5))
-b.add_load(Udl(10, DIRECTION.DOWN, 0, 10))
-b.add_load(Uvl(20, DIRECTION.DOWN, 10, 15))
-b.add_load(Moment(400, DIRECTION.ACW, 16.5))
+file = './beam_test_data.json'
+b = Beam(json_path=file)
+# print(b.length)
+b.evaluate_json()
 print(b.load_table)
-print('\n'*4)
-b.calc_reaction(upadate=True)
+b.calc_reaction()
 print(b.load_table)
-# print(b._update_reactions())
-# print(b.load_table['point_load'].sum())k
-
-# table = (b.load_table.iloc[:,1:]).copy()
-# knowns = table.dropna()
-# unkowns = table[table['load'].isna()]
-# print(knowns, '\n'*2, unkowns)
-
-
-# sum_matrix = np.array([
-#     [knowns[knowns['exponent'] != -2]['point_load'].sum()],
-#     [knowns['moment'].sum()]
-# ], dtype=np.float64)
-
-
-# inv_matrix = np.array(
-#     [[1,1],
-#     unkowns['moment_arm']],
-#     dtype=np.float64)
-# print(inv_matrix)
-
-# print('\n'*2, inv_matrix, '\n' ,sum_matrix)
-# inv_matrix = np.linalg.inv(inv_matrix)
-# solution = np.dot(inv_matrix, sum_matrix)
-# adjustment = np.array([[-1],[-1]])
-# solution = adjustment*solution
-# print('Solution:', solution)
-
-
-
-
-

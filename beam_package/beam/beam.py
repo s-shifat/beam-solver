@@ -1,15 +1,22 @@
+from beam_package.loads import loadbase
 from numpy.lib.npyio import load
 from beam_package.utils.sign_convention import DIRECTION
-from beam_package.loads.common_loads import Moment, PointLoad
+from beam_package.loads.common_loads import Moment, PointLoad, Udl, Uvl
 import numpy as np
-
+import json
+import os
 from beam_package.utils.dataholder import LoadTable
 from beam_package.singularity.exponents import SINGULARITY_EXPONENT
 
 
 class Beam:
-    def __init__(self, length, segments=1000):
-        self.length = length
+    def __init__(self, length=None, segments=1000, json_path=None):
+        if json_path:
+            with open(json_path) as f:
+                self.json_obj = json.load(f)
+            self.length = self.json_obj['length']
+        else:
+            self.length = length
         self.segments = segments
         self.x = np.linspace(start=0, stop=self.length, num=self.segments)
         self.load_table = LoadTable()
@@ -22,7 +29,7 @@ class Beam:
             # self.load_table.set_index(keys=['Id'], inplace=True)
         return output
 
-    def add_support(self, pos, kind='pin', inplace=False):
+    def add_support(self, pos, kind='pin'):
         if kind in ['pin', 'roller', 'fixed']:
             vertical_unknown = PointLoad(np.NAN, DIRECTION.UP, pos)
             vertical_unknown.idx_tuple = ('RP',  vertical_unknown.IDX)
@@ -33,7 +40,7 @@ class Beam:
             self.add_load(moment_unknown)
 
 
-    def calc_reaction(self, upadate=False):
+    def calc_reaction(self, upadate=True):
         '''
         logic:
          x = (A^-1) . B
@@ -74,7 +81,8 @@ class Beam:
         temp_load_table = self.load_table
         unknowns = temp_load_table[temp_load_table['load'].isna()][keep.keys()]
         for serial, load in unknowns.iterrows():
-            load_value = self.reactions[serial]
+            load_value = self.reactions.flatten()[serial]
+            print(load_value)
             if 'RP' in load['Id']:
                 direction = DIRECTION.UP if load_value>0 else DIRECTION.DOWN
                 p = PointLoad(load_value*direction, direction, load['pos0'])
@@ -87,3 +95,29 @@ class Beam:
                 m.idx_tuple = ('RM', m.IDX)
                 self.load_table = self.load_table[self.load_table['Id'] != load['Id']]
                 self.add_load(m)
+
+    def evaluate_json(self):
+        def get_load_obj(d):
+            type_ = d['type']
+            sign_ = {
+                'down': DIRECTION.DOWN,
+                'up': DIRECTION.UP,
+                'acw': DIRECTION.ACW,
+                'cw': DIRECTION.CW
+            }
+            if type_ == 'p':
+                out = PointLoad(d['magnitude'], sign_[d['direction']], d['position'])
+            elif type_ == 'm':
+                out = Moment(d['magnitude'], sign_[d['direction']], d['position'])
+            elif type_ == 'udl':
+                out = Udl(d['magnitude'], sign_[d['direction']], d['start'], d['end'])
+            elif type_ == 'uvl':
+                out = Uvl(d['magnitude'], sign_[d['direction']], d['posZero'], d['posPeak'])
+            return out
+        # add supports
+        for support in self.json_obj['supports']:
+            self.add_support(support['position'], kind=support['type'])
+        
+        # add loads
+        for load in self.json_obj['loads']:
+            self.add_load(get_load_obj(load))
