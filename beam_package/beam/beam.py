@@ -1,10 +1,7 @@
-from beam_package.loads import loadbase
-from numpy.lib.npyio import load
 from beam_package.utils.sign_convention import DIRECTION
 from beam_package.loads.common_loads import Moment, PointLoad, Udl, Uvl
 import numpy as np
 import json
-import os
 from beam_package.utils.dataholder import LoadTable
 from beam_package.singularity.exponents import SINGULARITY_EXPONENT
 

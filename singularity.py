@@ -3,10 +3,10 @@ import matplotlib.pyplot as plt
 
 
 def singular_unit(x, a, n):
-    '''
+    """
         format: <x-a>^n
         logic: by definition http://www.eng.uwaterloo.ca/~syde06/singularity-functions.pdf#page=1
-    '''
+    """
     if n < 0:
         if x != a:
             return 0
@@ -20,9 +20,9 @@ def singular_unit(x, a, n):
 
 
 def singular_x(arr, a, n):
-    ''' 
+    """
         broadcasting singular_unit to array ie, linspace x
-    '''
+    """
     return np.array(list(map(lambda x: singular_unit(x, a, n), arr)))
 
 
