@@ -61,9 +61,11 @@ class LoadBase:
                 self.span,
                 self.point_load,
                 self.moment_arm,
-                self.moment
+                self.moment,
+                ''
             ]]))
         return self.df
+
 
     def __repr__(self):
         return self.load_table.__repr__()

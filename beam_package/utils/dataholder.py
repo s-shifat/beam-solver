@@ -13,7 +13,8 @@ class LoadTable(DataFrame):
         'span',
         'point_load',
         'moment_arm',
-        'moment'
+        'moment',
+        'singular_matrix'
     ]
 
     def __init__(self, **kwargs):

@@ -1,5 +1,3 @@
-from os import startfile
-from numpy.lib.function_base import select
 from beam_package.loads.loadbase import LoadBase
 from beam_package.utils.sign_convention import DIRECTION
 from beam_package.singularity.exponents import SINGULARITY_EXPONENT
@@ -16,9 +14,6 @@ class PointLoad(LoadBase):
         super().__init__(self.EXPONENT, load_magnitude=load_magnitude,
                          direction=direction, start=position, end=self.END, index_tuple=(self.SYMBOL, self.IDX))
 
-    # def __repr__(self) -> str:
-    #     return super().__repr__(PointLoad.__name__)
-
 
 class Moment(LoadBase):
     EXPONENT = SINGULARITY_EXPONENT.MOMENT
@@ -34,9 +29,6 @@ class Moment(LoadBase):
     @property
     def moment_arm(self):
         return 0
-
-    # def __repr__(self) -> str:
-    #     return super().__repr__(Moment.__name__)
 
 
 class Udl(LoadBase):
@@ -64,9 +56,6 @@ class Udl(LoadBase):
     @property
     def point_load(self):
         return self.load * self.span
-
-    # def __repr__(self) -> str:
-    #     return super().__repr__(Udl.__name__)
 
 
 class Uvl(LoadBase):
@@ -98,9 +87,6 @@ class Uvl(LoadBase):
     @property
     def point_load(self):
         return 0.5 * self.value * self.span
-
-    # def __repr__(self) -> str:
-    #     return super().__repr__(Udl.__name__)
 
 
 if __name__ == '__main__':

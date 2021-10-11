@@ -1,6 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+# issue: fails when triangular load ie: uvl loading is given
+
+# for the project use this concept: file:///C:/Users/User/Downloads/lecture17.pdf
+# make different functions for different loadings then superposition in the Beam object
 
 def singular_unit(x, a, n):
     """
@@ -26,18 +30,28 @@ def singular_x(arr, a, n):
     return np.array(list(map(lambda x: singular_unit(x, a, n), arr)))
 
 
+# def integrate(arr, a, n):
+#     '''
+#         combining integration logic recursively.
+#         logic: http://www.eng.uwaterloo.ca/~syde06/singularity-functions.pdf#page=1
+#     '''
+#     if n == -2:
+#         return singular_x(arr, a, -1)
+#     elif n == -1:
+#         return singular_x(arr, a, 0)
+#     elif n >= 0:
+#         return singular_x(arr, a, n + 1) / (n + 1)
+
+
 def integrate(arr, a, n):
     '''
         combining integration logic recursively.
-        logic: http://www.eng.uwaterloo.ca/~syde06/singularity-functions.pdf#page=1
+        logic: http://ruina.tam.cornell.edu/Courses/Tam202-Fall10/hwsoln/Singularityfns.pdf
     '''
-    if n == -2:
-        return singular_x(arr, a, -1)
-    elif n == -1:
-        return singular_x(arr, a, 0)
+    if n <= 0:
+        return singular_x(arr, a, n+1)
     elif n >= 0:
-        return singular_x(arr, a, n + 1) / (n + 1)
-
+        return singular_x(arr, a, n+1)/(n + 1)
 
 def s(arr, a, n, depth=0):
     '''
@@ -51,19 +65,15 @@ def s(arr, a, n, depth=0):
     return s(arr, a, n + 1, depth - 1)
 
 
-def singularity_order(order=0):
-    return np.array([
-        s(x, 0, -2, order),
-        s(x, 15, 0, order),
-        s(x, 45, 0, order),
-        s(x, 25, -1, order),
-        s(x, 50, -2, order),
-        # s(x, 50, -1, order),
-        s(x, 50, -1, order)
-    ])
 
+def singularity_order(distances, order=0):
+    '''<x-a>^A do it with respect to q [(pos0, exp)]'''
+    s_matrix = []
+    for pos0, exp in distances:
+        s_matrix.append(s(x, pos0, exp, order))
+    return np.array(s_matrix, dtype=np.float64)
 
-def enq(loads, order):
+def enq(loads, distances, order):
     which = {
         'w': 0,
         'V': 1,
@@ -71,17 +81,15 @@ def enq(loads, order):
         'theta': 3,
         'def': 4,
     }
-    return (loads * singularity_order(which[order])).sum(0)
+    return (loads * singularity_order(distances, which[order])).sum(0)
 
+# fig, (sfd, bmd,slope, deflection) = plt.subplots(4, 1)
 
-Ra = 67.5  # 210
-Rb = 42.5  # 90
-
-fig, ((sfd, bmd), (slope, deflection)) = plt.subplots(2, 2)
+fig, (sfd, bmd) = plt.subplots(2, 1)
 sfd.set_title('SFD')
 bmd.set_title('BMD')
 sfd.spines['bottom'].set_position('zero')
-sfd.set_xlim(0, 55)
+
 sfd.spines['left'].set_position('zero')
 sfd.spines['right'].set_color('none')
 sfd.spines['top'].set_color('none')
@@ -91,25 +99,44 @@ bmd.spines['left'].set_position('zero')
 bmd.spines['right'].set_color('none')
 bmd.spines['top'].set_color('none')
 
-x = np.linspace(0, 50, 50 * 1000)
+
+length = 10
+x = np.linspace(0, length, length * 1000)
+distances = [
+    # (pos, exp)
+    (2,-1),
+    (9,-1),
+    (0,0),
+    (0,1),
+    (10,0),
+    (10,1),
+
+]
 loads = np.array([
-    125,
-    20,
-    -20,
-    -50,
-    -10875,
-    -550
-]).reshape(6, 1)
+    # load
+    15,
+    30,
+    0,
+    -9/10,
+    9,
+    9/10
+])
+loads = loads.reshape(len(loads), 1)
 print(loads)
 
-p = enq(loads, 'w')
-V = enq(loads, 'V')
-M = enq(loads, 'M')
-theta = enq(loads, 'theta')
-defl = enq(loads, 'def')
+
+sfd.set_xlim(0, length+5)
+bmd.set_xlim(0, length + 5)
+
+p = enq(loads, distances, 'w')
+V = enq(loads, distances, 'V')
+# print(V[-1])
+M = enq(loads,distances, 'M')
+theta = enq(loads, distances,  'theta')
+defl = enq(loads, distances, 'def')
 
 # plots
-print(V)
+print(V,M)
 sfd.plot(x, V)
 
 max_moment = np.max(M)
@@ -119,6 +146,6 @@ bmd.plot(x, M)
 bmd.text(distance, max_moment, f"{max_moment:.2f}")
 bmd.plot(distance, max_moment, '*')
 
-slope.plot(x, theta)
-deflection.plot(x, defl)
+# slope.plot(x, theta)
+# deflection.plot(x, defl)
 plt.show()
