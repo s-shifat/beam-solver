@@ -100,31 +100,29 @@ bmd.spines['right'].set_color('none')
 bmd.spines['top'].set_color('none')
 
 
-length = 10
-x = np.linspace(0, length, length * 1000)
+length = 20
 distances = [
     # (pos, exp)
-    (2,-1),
-    (9,-1),
-    (0,0),
-    (0,1),
-    (10,0),
-    (10,1),
-
+    (0,-1),
+    (5,-1),
+    (6,0),
+    (12,0),
+    (15,-2),
+    (20,-1),
 ]
 loads = np.array([
     # load
-    15,
-    30,
-    0,
-    -9/10,
-    9,
-    9/10
+    33,
+    -20,
+    -5,
+    5,
+    -30,
+    17
 ])
 loads = loads.reshape(len(loads), 1)
 print(loads)
 
-
+x = np.linspace(0, length, length * 1000)
 sfd.set_xlim(0, length+5)
 bmd.set_xlim(0, length + 5)
 
@@ -146,6 +144,4 @@ bmd.plot(x, M)
 bmd.text(distance, max_moment, f"{max_moment:.2f}")
 bmd.plot(distance, max_moment, '*')
 
-# slope.plot(x, theta)
-# deflection.plot(x, defl)
 plt.show()

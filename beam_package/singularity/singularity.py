@@ -1,7 +1,7 @@
 import numpy as np
 
 class Singularity:
-    def __init__(self, points_along_lenght, a, n):
+    def __init__(self, points_along_lenght: np.ndarray, a, n):
         self.arr = points_along_lenght
         self.a = a
         self.n = n

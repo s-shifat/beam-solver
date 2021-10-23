@@ -14,7 +14,6 @@ class LoadTable(DataFrame):
         'point_load',
         'moment_arm',
         'moment',
-        'singular_matrix'
     ]
 
     def __init__(self, **kwargs):
