@@ -66,14 +66,14 @@ def s(arr, a, n, depth=0):
 
 
 
-def singularity_order(distances, order=0):
+def singularity_order(x, distances, order=0):
     '''<x-a>^A do it with respect to q [(pos0, exp)]'''
     s_matrix = []
     for pos0, exp in distances:
         s_matrix.append(s(x, pos0, exp, order))
     return np.array(s_matrix, dtype=np.float64)
 
-def enq(loads, distances, order):
+def enq(loads, distances, order, x):
     which = {
         'w': 0,
         'V': 1,
@@ -81,67 +81,66 @@ def enq(loads, distances, order):
         'theta': 3,
         'def': 4,
     }
-    return (loads * singularity_order(distances, which[order])).sum(0)
-
-# fig, (sfd, bmd,slope, deflection) = plt.subplots(4, 1)
-
-fig, (sfd, bmd) = plt.subplots(2, 1)
-sfd.set_title('SFD')
-bmd.set_title('BMD')
-sfd.spines['bottom'].set_position('zero')
-
-sfd.spines['left'].set_position('zero')
-sfd.spines['right'].set_color('none')
-sfd.spines['top'].set_color('none')
-
-bmd.spines['bottom'].set_position('zero')
-bmd.spines['left'].set_position('zero')
-bmd.spines['right'].set_color('none')
-bmd.spines['top'].set_color('none')
+    return (loads * singularity_order(x, distances, which[order])).sum(0)
 
 
-length = 20
-distances = [
-    # (pos, exp)
-    (0,-1),
-    (5,-1),
-    (6,0),
-    (12,0),
-    (15,-2),
-    (20,-1),
-]
-loads = np.array([
-    # load
-    33,
-    -20,
-    -5,
-    5,
-    -30,
-    17
-])
-loads = loads.reshape(len(loads), 1)
-print(loads)
+def show_plot(x:np.array, length:int, distances:list, loads:np.array):
+    # x = np.linspace(0, length, length * 1000)
+    fig, (sfd, bmd) = plt.subplots(2, 1, figsize=(20, 25))
+    sfd.set_title('SFD')
+    bmd.set_title('BMD')
+    sfd.spines['bottom'].set_position('zero')
 
-x = np.linspace(0, length, length * 1000)
-sfd.set_xlim(0, length+5)
-bmd.set_xlim(0, length + 5)
+    sfd.spines['left'].set_position('zero')
+    sfd.spines['right'].set_color('none')
+    sfd.spines['top'].set_color('none')
 
-p = enq(loads, distances, 'w')
-V = enq(loads, distances, 'V')
-# print(V[-1])
-M = enq(loads,distances, 'M')
-theta = enq(loads, distances,  'theta')
-defl = enq(loads, distances, 'def')
+    bmd.spines['bottom'].set_position('zero')
+    bmd.spines['left'].set_position('zero')
+    bmd.spines['right'].set_color('none')
+    bmd.spines['top'].set_color('none')
 
-# plots
-print(V,M)
-sfd.plot(x, V)
+    sfd.set_xlim(0, length+5)
+    bmd.set_xlim(0, length + 5)
 
-max_moment = np.max(M)
-distance = x[np.argmax(M)]
-bmd.text(10, 100, f"Max bending moment: {max_moment:.2f} k-in")
-bmd.plot(x, M)
-bmd.text(distance, max_moment, f"{max_moment:.2f}")
-bmd.plot(distance, max_moment, '*')
+    p = enq(loads, distances, 'w', x)
+    V = enq(loads, distances, 'V', x)
+    # print(V[-1])
+    M = enq(loads,distances, 'M', x)
+    theta = enq(loads, distances,  'theta', x)
+    defl = enq(loads, distances, 'def', x)
+    sfd.plot(x, V)
 
-plt.show()
+    max_moment = np.max(M)
+    distance = x[np.argmax(M)]
+    bmd.text(10, 100, f"Max bending moment: {max_moment:.2f} k-in")
+    bmd.plot(x, M)
+    bmd.text(distance, max_moment, f"{max_moment:.2f}")
+    bmd.plot(distance, max_moment, '*')
+    plt.show()
+
+
+if __name__ == '__main__':
+    length = 20
+    distances = [
+        # (pos, exp)
+        (0,-1),
+        (5,-1),
+        (6,0),
+        (12,0),
+        (15,-2),
+        (20,-1),
+    ]
+    loads = np.array([
+        # load
+        33,
+        -20,
+        -5,
+        5,
+        -30,
+        17
+    ])
+    loads = loads.reshape(len(loads), 1)
+    x = np.linspace(0, length, length * 1000)
+    
+    show_plot(x, length, distances, loads)

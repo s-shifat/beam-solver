@@ -1,0 +1,3 @@
+* add another table in beam class
+* attributes: q, M, V, theta, deflection
+* then using singularity.py fill that table from existing load_table

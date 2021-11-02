@@ -3,6 +3,7 @@ from beam_package.loads.common_loads import Moment, PointLoad, Udl, Uvl
 from beam_package.utils.dataholder import LoadTable
 from beam_package.singularity.exponents import SINGULARITY_EXPONENT
 from beam_package.loads.loadbase import LoadBase
+from beam_package.singularity.singularity import show_plot
 import numpy as np
 import matplotlib.pyplot as plt
 import json
@@ -19,12 +20,10 @@ class Beam:
         self.x = np.linspace(start=0, stop=self.length, num=self.segments, dtype=np.float64)
         self.load_table = LoadTable()
         self.reactions = None
-        self.sfd_matrix = np.zeros(shape=(self.segments,),dtype=np.float64)
-        self.bmd_matrix = np.zeros(shape=(self.segments,))
+        self.loads = []
+        self.distances = []
 
     def add_load(self, load_obj: LoadBase, inplace=True):
-        self.sfd_matrix += load_obj.get_singular_sfd_matrix(self.x)
-        self.bmd_matrix += load_obj.get_singular_bmd_matrix(self.x)
         output = self.load_table.append(load_obj.load_table, ignore_index=True)
         if inplace:
             self.load_table = output
@@ -88,16 +87,12 @@ class Beam:
             if 'RP' in load['Id']:
                 direction = DIRECTION.UP if load_value>0 else DIRECTION.DOWN
                 p = PointLoad(load_value*direction, direction, load['pos0'])
-                self.sfd_matrix += p.get_singular_sfd_matrix(self.x)
-                self.bmd_matrix += p.get_singular_bmd_matrix(self.x)
                 p.idx_tuple = ('RP', p.IDX)
                 self.load_table = self.load_table[self.load_table['Id'] != load['Id']]
                 self.add_load(p)
             elif 'RM' in load['Id']:
                 direction = DIRECTION.CW if load_value > 0 else direction.ACW
                 m = Moment(load_value*direction, direction, load['pos0'])
-                self.sfd_matrix += m.get_singular_sfd_matrix(self.x)
-                self.bmd_matrix += m.get_singular_bmd_matrix(self.x)
                 m.idx_tuple = ('RM', m.IDX)
                 self.load_table = self.load_table[self.load_table['Id'] != load['Id']]
                 self.add_load(m)
@@ -130,8 +125,6 @@ class Beam:
 
     def draw(self):
         fig, (sfd, bmd) = plt.subplots(nrows=2, ncols=1)
-        sfd.plot(self.x, self.sfd_matrix)
-        sfd.plot(self.x, self.bmd_matrix)
         sfd.set_title('SFD')
         bmd.set_title('BMD')
         sfd.spines['bottom'].set_position('zero')
@@ -144,5 +137,7 @@ class Beam:
         bmd.spines['left'].set_position('zero')
         bmd.spines['right'].set_color('none')
         bmd.spines['top'].set_color('none')
-        print(self.sfd_matrix)
         # plt.show()
+
+    def __repr__(self) -> str:
+        return self.load_table.__repr__()

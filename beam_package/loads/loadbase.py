@@ -1,7 +1,5 @@
 from beam_package.utils.dataholder import LoadTable
 from beam_package.utils.sign_convention import DIRECTION
-from beam_package.singularity.singularity import Singularity
-from numpy import ndarray
 
 class LoadBase:
     ROTATION_ADJUSTMENT = -1
@@ -50,21 +48,6 @@ class LoadBase:
             return self.idx_tuple[0] + str(self.idx_tuple[1])
         return
 
-    def get_singular_sfd_matrix(self, x: ndarray):
-        # sfd_exp  = self.exponent_ + 1
-        sfd_exp = 0
-        s = Singularity(x, self.pos0, sfd_exp)
-        matrix = s.matrix
-        load = self.load
-        return load * matrix
-
-    def get_singular_bmd_matrix(self, x: ndarray):
-        # bmd_exp = self.exponent_ + 2
-        bmd_exp = 1
-        s = Singularity(x, self.pos0, bmd_exp)
-        matrix = s.matrix
-        load = self.load
-        return load * matrix
 
     @property
     def load_table(self):
