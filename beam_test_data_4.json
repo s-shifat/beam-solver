@@ -1,0 +1,34 @@
+{
+    "length": 78,
+    "supports":[
+        {
+            "type": "pin",
+            "position": 20
+        },
+        {
+            "type": "roller",
+            "position": 70
+        }
+    ],
+    "loads":[
+        {
+            "type": "p",
+            "position": 15,
+            "magnitude": 40,
+            "direction": "down"
+        },
+        {
+            "type": "m",
+            "position": 70,
+            "magnitude": 555,
+            "direction": "acw"
+        },
+        {
+            "type": "udl",
+            "start": 0,
+            "end": 78,
+            "magnitude": 20,
+            "direction": "down"
+        }
+    ]
+}

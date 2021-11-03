@@ -5,8 +5,8 @@ from beam_package.singularity.exponents import SINGULARITY_EXPONENT
 from beam_package.loads.loadbase import LoadBase
 from beam_package.singularity.singularity import show_plot
 import numpy as np
-import matplotlib.pyplot as plt
 import json
+from pandas import Series
 
 class Beam:
     def __init__(self, length=None, segments=1000, json_path=None):
@@ -48,6 +48,9 @@ class Beam:
          where, x is the reaction matrix 2x1
          A is the matrix of co-efficients 2x2
          B is the matric of constants 2x1
+         
+         Todo:
+            * Fixed support need to be added
         '''
         temp_load_table = (self.load_table.iloc[:, 1:]).copy()
         knowns = temp_load_table.dropna()
@@ -123,21 +126,30 @@ class Beam:
         for load in self.json_obj['loads']:
             self.add_load(get_load_obj(load))
 
+    def _extract_series(self, s:Series):
+        exponent = s['exponent']
+        if exponent == 0:
+            # UDL
+            self.distances.append((s['pos0'], exponent))
+            self.loads.append(s['load'])
+            self.distances.append((s['pos1'], exponent))
+            self.loads.append(-s['load'])
+        elif exponent == 1:
+            # UVL
+            pass
+        else:
+            # PointLoad or Moment
+            self.distances.append((s['pos0'], exponent))
+            self.loads.append(s['load'])
+
+    def update_loads_and_distances(self):
+        for _, row in self.load_table.iterrows():
+            self._extract_series(row)
+        self.loads = np.array(self.loads).reshape(len(self.loads), 1)
+
     def draw(self):
-        fig, (sfd, bmd) = plt.subplots(nrows=2, ncols=1)
-        sfd.set_title('SFD')
-        bmd.set_title('BMD')
-        sfd.spines['bottom'].set_position('zero')
-        sfd.spines['left'].set_position('zero')
-        sfd.spines['right'].set_color('none')
-        sfd.spines['top'].set_color('none')
-        sfd.set_xlim(0, self.length+5)
-        bmd.set_xlim(0, self.length + 5)
-        bmd.spines['bottom'].set_position('zero')
-        bmd.spines['left'].set_position('zero')
-        bmd.spines['right'].set_color('none')
-        bmd.spines['top'].set_color('none')
-        # plt.show()
+        self.update_loads_and_distances()
+        show_plot(self.x, self.length, self.distances, self.loads)
 
     def __repr__(self) -> str:
         return self.load_table.__repr__()

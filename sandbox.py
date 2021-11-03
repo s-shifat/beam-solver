@@ -4,10 +4,10 @@ from beam_package.beam.beam import Beam
 import json
 
 
-file = './beam_test_data.json'
+# file = './beam_test_data.json'
 # file = './beam_test_data_2.json'
+file = './beam_test_data_4.json'
 b = Beam(json_path=file)
-# print(b.length)
 b.evaluate_json()
 print(b.load_table)
 b.calc_reaction()

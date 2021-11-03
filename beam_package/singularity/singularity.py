@@ -91,7 +91,7 @@ def show_plot(x:np.array, length:int, distances:list, loads:np.array):
             * Just use the eqn() function in Beam Class
     '''
     # x = np.linspace(0, length, length * 1000)
-    fig, (sfd, bmd) = plt.subplots(2, 1, figsize=(20, 25))
+    fig, (sfd, bmd) = plt.subplots(2, 1)
     sfd.set_title('SFD')
     bmd.set_title('BMD')
     sfd.spines['bottom'].set_position('zero')
@@ -123,29 +123,3 @@ def show_plot(x:np.array, length:int, distances:list, loads:np.array):
     bmd.text(distance, max_moment, f"{max_moment:.2f}")
     bmd.plot(distance, max_moment, '*')
     plt.show()
-
-
-if __name__ == '__main__':
-    length = 20
-    distances = [
-        # (pos, exp)
-        (0,-1),
-        (5,-1),
-        (6,0),
-        (12,0),
-        (15,-2),
-        (20,-1),
-    ]
-    loads = np.array([
-        # load
-        33,
-        -20,
-        -5,
-        5,
-        -30,
-        17
-    ])
-    loads = loads.reshape(len(loads), 1)
-    x = np.linspace(0, length, length * 1000)
-    
-    show_plot(x, length, distances, loads)
