@@ -1,0 +1,36 @@
+{
+    "length":34,
+    "supports":[
+        {
+            "type": "pin",
+            "position": 16
+        },
+        {
+            "type": "roller",
+            "position": 34
+        }
+    ],
+    "loads":[
+        {
+            "type": "p",
+            "position": 8,
+            "magnitude": 100,
+            "direction": "down"
+        },
+        {
+            "type": "uvl",
+            "posZero": 16,
+            "posPeak": 22,
+            "magnitude": 12,
+            "direction":"down"
+        },
+        {
+            "type": "uvl",
+            "posZero": 34,
+            "posPeak": 22,
+            "magnitude": 12,
+            "direction":"down"
+        }
+
+    ]
+}
