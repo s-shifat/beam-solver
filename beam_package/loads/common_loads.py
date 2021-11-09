@@ -36,6 +36,7 @@ class Udl(LoadBase):
     SYMBOL = 'UDL'
 
     def __init__(self, load_magnitude, direction, start, end) -> None:
+        Udl.IDX += 1
         super().__init__(exponent_=self.EXPONENT, load_magnitude=load_magnitude,
                          direction=direction, start=start, end=end, index_tuple=(self.SYMBOL, self.IDX))
         self.s = start
@@ -64,6 +65,7 @@ class Uvl(LoadBase):
     SYMBOL = 'UVL'
 
     def __init__(self, peak_load_magnitude, direction, zero_position, peak_position) -> None:
+        Uvl.IDX += 1
         super().__init__(exponent_=self.EXPONENT, load_magnitude=peak_load_magnitude,
                          direction=direction, start=zero_position, end=peak_position,
                          index_tuple=(self.SYMBOL, self.IDX))
