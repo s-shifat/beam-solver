@@ -8,6 +8,8 @@ import sys
 # file = './beam_test_data.json'
 # file = './beam_test_data_2.json'
 #file = './beam_test_data_4.json'
+# python3 sandbox.py beam_test_data_4.json
+
 file = sys.argv[1]
 b = Beam(json_path=file)
 b.evaluate_json()
