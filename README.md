@@ -33,6 +33,14 @@ However here are some limitations for now:
   * This tool can't solve simplisupported beams with fixed or internal-hinged
   * When uniformly varied load ie UVL is provided, SFD and BMD doesn't produce the plot as expected.
 
+
+### Future Goals
+  * Resolve the limitations
+  * Add Deflected Shape Diagram Feature.
+  * Convert this project to a web application using Django frame work
+  * Provide a nice front end to take in the beam definition and real time visualization.
+  * Render the SFD and BMD into the front end using Chart.js
+
 ### Contibute To This Project!
 
 I will be very happy if you contribute to this project.
