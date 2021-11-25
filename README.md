@@ -19,7 +19,7 @@ This is a civil engineering tool that aims towards solving any statically determ
   ```bash
   pip install -r requirements.txt
   ```
-  5. Now you can define your beam in a json format in [this file](./json_structure.png).
+  5. Now you can define your beam in a json format in [this file](https://github.com/s-shifat/beam-solver/blob/main/json_structure.jpg).
   6. Once you've defined your beam, now just run:
   ```bash
   python3 main.py your_json_file.json
