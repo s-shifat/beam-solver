@@ -28,8 +28,8 @@ This is a civil engineering tool that aims towards solving any statically determ
   
 ### Sample Usage
   1. Your beam: ![your_beam](./doc/img/your_beam.png)
-  2. Make a json representation of the beam. The instructions about making a beam json object are in [this](./doc/img/json_structure.jpg) file. The json representaton of the beam mentioned in #1 would be:
-  `your_beam.json`:
+  2. Make a json representation of the beam. The instructions about making a beam json object are in [this](./doc/img/json_structure.jpg) file. The json representaton of the beam mentioned above would be:
+  <br>`your_beam.json`:
   ```json
   {
     "length": 20,
