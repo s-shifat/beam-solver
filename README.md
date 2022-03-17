@@ -26,6 +26,9 @@ This is a civil engineering tool that aims towards solving any statically determ
   ```
   ###### Note: there are some json examples in [test_data](./test_data) directory.
   
+### Sample Usage
+  1. Your beam: ![your_beam](./doc/img/your_beam.png)
+  
 ### Known Issues and Limitaions
   
 I am actively working on this project to improve its features and functionalities.
