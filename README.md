@@ -28,6 +28,50 @@ This is a civil engineering tool that aims towards solving any statically determ
   
 ### Sample Usage
   1. Your beam: ![your_beam](./doc/img/your_beam.png)
+  2. Make a json representation of the beam. The instructions about making a beam json object are in [this](./doc/img/json_structure.jpg) file. The json representaton of the beam mentioned in #1 would be:
+  `your_beam.json`:
+  ```json
+  {
+    "length": 20,
+    "supports":[
+        {
+            "type": "pin",
+            "position": 2
+        },
+        {
+            "type": "roller",
+            "position": 17
+        }
+    ],
+    "loads":[
+        {
+            "type": "p",
+            "position": 7,
+            "magnitude": 25.3,
+            "direction": "down"
+        },
+        {
+            "type": "m",
+            "position": 10,
+            "magnitude": 38,
+            "direction": "cw"
+        },
+        {
+            "type": "udl",
+            "start": 3,
+            "end": 19,
+            "magnitude": 13,
+            "direction": "down"
+        }
+    ]
+}
+  ```
+  3. Now from the project dir where [`main.py`](./main.py) is located, run:
+  ```bash
+  python main.py your_beam.json
+  ```
+  this would output your SFD and BMD diagram:
+  ![SFD-BMD](./doc/img/json_to_sfd.jpg)
   
 ### Known Issues and Limitaions
   
