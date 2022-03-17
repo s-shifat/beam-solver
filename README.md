@@ -71,7 +71,7 @@ This is a civil engineering tool that aims towards solving any statically determ
   python main.py your_beam.json
   ```
   this would output your SFD and BMD diagram:
-  ![SFD-BMD](./doc/img/json_to_sfd.jpg)
+  ![SFD-BMD](./doc/img/beam_solved.png)
   
 ### Known Issues and Limitaions
   
